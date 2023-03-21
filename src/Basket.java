@@ -1,15 +1,6 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.stream.Stream;
+import java.io.*;
 
-public class Basket {
+public class Basket implements Serializable {
     private final Product[] goods;
     private double nameOfProducts = 0;
 
@@ -52,32 +43,17 @@ public class Basket {
         System.out.printf("ИТОГО Товаров в корзине на %10.2f\n\n", nameOfProducts);
     }
 
-    public void saveTxt(File textFile) throws IOException {
-        PrintWriter pw = new PrintWriter(textFile);
-
-        Stream.of(goods).forEach(p ->
-                pw.printf("%s@%.4f@%d\n", p.getName(), p.getPrice(), p.getInBasket()));
-        pw.close();
+    public void saveBin(File file) throws IOException {
+        FileOutputStream fos = new FileOutputStream(file);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(this);
+        oos.close();
     }
 
-    public static Basket loadFromTxtFile(File textFile) throws FileNotFoundException, ParseException {
-        Scanner scanner = new Scanner(textFile);
-        List<Product> goods = new ArrayList<>();
-
-        String name;
-        double price;
-        int inBasket;
-
-        NumberFormat nf = NumberFormat.getInstance();
-
-        while (scanner.hasNext()) {
-            String[] d = scanner.nextLine().split("@");
-            name = d[0];
-            price = nf.parse(d[1]).doubleValue();
-            inBasket = Integer.parseInt(d[2]);
-            goods.add(new Product(name, price));
-        }
-        return new Basket(goods.toArray(Product[]::new));
+    public static Basket loadFromTxtFile(File textFile) throws IOException, ClassNotFoundException {
+        FileInputStream fis = new FileInputStream(textFile);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        return (Basket) ois.readObject();
     }
 }
 

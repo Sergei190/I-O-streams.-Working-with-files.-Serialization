@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Scanner;
 
 public class Main {
@@ -15,24 +14,20 @@ public class Main {
             new Product("Сахар", 75.0)
     };
 
-    public static void main(String[] args) throws FileNotFoundException, ParseException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
-        String s; //
-        Basket shoppingCart;
+        String s;
+        Basket shoppingCart = new Basket(goods);
         int selectedItem;
         int itemCount;
 
-        File basketFile = new File("C:\\Users\\Ser\\IdeaProjects\\One-DimensionalArrays\\out\\production\\One-DimensionalArrays/basket.txt");
+        File basketFile = new File("basket.bin");
 
         if (basketFile.exists()) {
             System.out.println("Загрузить корзину<ENTER>? ");
             if (scanner.nextLine().equals("")) {
                 shoppingCart = Basket.loadFromTxtFile(basketFile);
-            } else {
-                shoppingCart = new Basket(goods);
             }
-        } else {
-            shoppingCart = new Basket(goods);
         }
 
         while (true) {
@@ -52,16 +47,15 @@ public class Main {
                         continue;
                     }
                     shoppingCart.addToCart(selectedItem - 1, itemCount);
-                    shoppingCart.saveTxt(basketFile);
+                    shoppingCart.saveBin(basketFile);
                 } catch (NumberFormatException nfe) {
+                    // Во вводе что-то отличное от двух целых чисел
                     System.out.println("\nНужно 2 аргумента - 2 целых числа");
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException(e);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
                 }
             } else if (s.equals("end")) {
-                break;
+                break;  // Game Over
             }
             System.out.println("\nНужно 2 аргумента");
         }

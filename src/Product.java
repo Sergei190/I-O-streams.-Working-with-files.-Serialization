@@ -1,17 +1,13 @@
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
     private final String name;
     private final double price;
     private int inBasket = 0;
 
-    public Product(String name, int price) {
-        this.name = name;
-        this.price = price;
-    }
-
     public Product(String name, double price) {
         this.name = name;
         this.price = price;
-        this.inBasket = inBasket;
     }
 
     public String getName() {
