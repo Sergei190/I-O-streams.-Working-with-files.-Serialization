@@ -22,7 +22,7 @@ public class Main {
         int selectedItem;
         int itemCount;
 
-        File basketFile = new File("C:\\Users\\Ser\\IdeaProjects\\One-DimensionalArrays\\out\\production\\One-DimensionalArrays/basket.txt");
+        File basketFile = new File("basket.txt");
 
         if (basketFile.exists()) {
             System.out.println("Загрузить корзину<ENTER>? ");
