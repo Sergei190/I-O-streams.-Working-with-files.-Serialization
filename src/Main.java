@@ -17,7 +17,7 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException, ParseException {
         Scanner scanner = new Scanner(System.in);
-        String s; //
+        String s; 
         Basket shoppingCart;
         int selectedItem;
         int itemCount;
