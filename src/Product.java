@@ -3,7 +3,7 @@ public class Product {
     private final double price;
     private int inBasket = 0;
 
-    public Product(String name, int price) {
+    public Product(String name, double v, int price) {
         this.name = name;
         this.price = price;
     }

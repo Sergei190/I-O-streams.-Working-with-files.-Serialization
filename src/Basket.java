@@ -1,7 +1,6 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.google.gson.*;
+
+import java.io.*;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ import java.util.stream.Stream;
 
 public class Basket {
     private final Product[] goods;
-    private double nameOfProducts = 0;
+    private double totalValue = 0;
 
     public Basket(Product[] goods) {
         this.goods = goods.clone();
@@ -19,23 +18,23 @@ public class Basket {
 
     public void addToCart(int productNum, int amount) {
         goods[productNum].changeItemInBasket(amount);
-        nameOfProducts += goods[productNum].getPrice() * amount;
+        totalValue += goods[productNum].getPrice() * amount;
     }
 
     public void printGoodsList() {
 
-        System.out.print(" №. Название. Цена за шт. В корзине. Стоимость\n" + "");
+        System.out.print(" №       Название   Цена за шт.     В корзине        Стоимость\n" + "");
 
         double currentValue;
-        nameOfProducts = 0;
+        totalValue = 0;
         for (int i = 0; i < goods.length; i++) {
             currentValue = goods[i].getInBasket() * goods[i].getPrice();
-            nameOfProducts += currentValue;
+            totalValue += currentValue;
             System.out.printf("%2d. %13s %12.2f %10d %17.2f\n", i + 1,
                     goods[i].getName(), goods[i].getPrice(),
                     goods[i].getInBasket(), currentValue);
         }
-        System.out.printf("ИТОГО Товаров в корзине на %10.2f\n\n", nameOfProducts);
+        System.out.printf("ИТОГО Товаров в корзине на %10.2f\n\n", totalValue);
         System.out.println("Добавьте товар в корзину или для завершения работы введите end.");
         System.out.print("");
     }
@@ -49,35 +48,44 @@ public class Basket {
                         item.getInBasket() * item.getPrice());
             }
         }
-        System.out.printf("ИТОГО Товаров в корзине на %10.2f\n\n", nameOfProducts);
+        System.out.printf("ИТОГО Товаров в корзине на %10.2f\n\n", totalValue);
     }
 
-    public void saveTxt(File textFile) throws IOException {
-        PrintWriter pw = new PrintWriter(textFile);
-
+    public void saveTxt(File textFile) throws FileNotFoundException {
+        var pw = new PrintWriter(textFile);
         Stream.of(goods).forEach(p ->
                 pw.printf("%s@%.4f@%d\n", p.getName(), p.getPrice(), p.getInBasket()));
         pw.close();
     }
 
+    public void saveToJSON(File textFile) throws IOException {
+        FileWriter writer = new FileWriter(textFile);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        writer.write(gson.toJson(this, Basket.class));
+        writer.close();
+    }
+
     public static Basket loadFromTxtFile(File textFile) throws FileNotFoundException, ParseException {
         Scanner scanner = new Scanner(textFile);
         List<Product> goods = new ArrayList<>();
-
         String name;
         double price;
         int inBasket;
-
         NumberFormat nf = NumberFormat.getInstance();
-
         while (scanner.hasNext()) {
             String[] d = scanner.nextLine().split("@");
             name = d[0];
             price = nf.parse(d[1]).doubleValue();
             inBasket = Integer.parseInt(d[2]);
-            goods.add(new Product(name, price));
+            goods.add(new Product(name, price, inBasket));
         }
         return new Basket(goods.toArray(Product[]::new));
     }
-}
 
+    public static Basket loadFromJSON(File textFile) throws FileNotFoundException {
+        var gson = new Gson();
+        var reader = new FileReader(textFile);
+
+        return gson.fromJson(reader, Basket.class);
+    }
+}
