@@ -1,0 +1,40 @@
+{
+  "goods": [
+    {
+      "name": "Хлеб",
+      "price": 60.0,
+      "inBasket": 10
+    },
+    {
+      "name": "Гречка",
+      "price": 92.6,
+      "inBasket": 0
+    },
+    {
+      "name": "Молоко",
+      "price": 90.0,
+      "inBasket": 0
+    },
+    {
+      "name": "Яблоко",
+      "price": 20.0,
+      "inBasket": 0
+    },
+    {
+      "name": "Тушенка",
+      "price": 385.5,
+      "inBasket": 0
+    },
+    {
+      "name": "Сгущенка",
+      "price": 127.8,
+      "inBasket": 0
+    },
+    {
+      "name": "Сахар",
+      "price": 75.0,
+      "inBasket": 0
+    }
+  ],
+  "totalValue": 600.0
+}

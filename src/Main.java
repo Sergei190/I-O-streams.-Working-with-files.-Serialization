@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Scanner;
 
 public class Main {
@@ -15,19 +14,22 @@ public class Main {
             new Product("Сахар", 75.0)
     };
 
-    public static void main(String[] args) throws FileNotFoundException, ParseException {
+    public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
-        String s; 
+        String s;
         Basket shoppingCart;
         int selectedItem;
         int itemCount;
 
-        File basketFile = new File("basket.txt");
+        var basketFile = new File("basket.txt");
+        var jsonFile = new File("basket.json");
+        var logFile = new File("log.csv");
+        var clientLog = new ClientLog();
 
-        if (basketFile.exists()) {
+        if (jsonFile.exists()) {
             System.out.println("Загрузить корзину<ENTER>? ");
             if (scanner.nextLine().equals("")) {
-                shoppingCart = Basket.loadFromTxtFile(basketFile);
+                shoppingCart = Basket.loadFromJSON(jsonFile);
             } else {
                 shoppingCart = new Basket(goods);
             }
@@ -52,12 +54,11 @@ public class Main {
                         continue;
                     }
                     shoppingCart.addToCart(selectedItem - 1, itemCount);
-                    shoppingCart.saveTxt(basketFile);
+                    shoppingCart.saveToJSON(jsonFile);
+                    clientLog.log(selectedItem, itemCount);
                 } catch (NumberFormatException nfe) {
                     System.out.println("\nНужно 2 аргумента - 2 целых числа");
                 } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             } else if (s.equals("end")) {
@@ -65,6 +66,7 @@ public class Main {
             }
             System.out.println("\nНужно 2 аргумента");
         }
+        clientLog.exportAsCSV(logFile);
         scanner.close();
         shoppingCart.printCart();
     }
