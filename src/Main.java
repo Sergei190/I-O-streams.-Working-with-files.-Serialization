@@ -58,7 +58,7 @@ public class Main {
                     }
                     shoppingCart.addToCart(selectedItem - 1, itemCount);
                     shoppingCart.saveToJSON(jsonFile);
-                    clientLog.log(selectedItem, itemCount);
+                    clientLog.getLog(selectedItem, itemCount);
                 } catch (NumberFormatException nfe) {
                     System.out.println("\nНужно 2 аргумента - 2 целых числа");
                 } catch (FileNotFoundException e) {
